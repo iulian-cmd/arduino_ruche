@@ -1,10 +1,9 @@
-// “Chaque passage allumera une led pendant 200 ms”
 const int BUTTON = 2;
 const int LED = 4;
 int LEDflag = 0;                   // LED status flag
 int value = analogRead(A0); 
 int comptetours = 0;
-const int fourchePin = 5;     //fourche pin5
+const int fourchePin = 5;         // optical fork pin 5
 int etatfourcheactuel = 0;
 int etatfourcheprecedent = 0;
 
@@ -15,7 +14,7 @@ void setup() {
   Serial.begin(9600);
   pinMode(LED, OUTPUT);           // set the digital pin as output:
   pinMode(BUTTON, INPUT);         // set the digital pin as input:
-  pinMode(fourchePin, INPUT);  //en entrée
+  pinMode(fourchePin, INPUT);     // in input
   digitalWrite(LED, LOW);         // turn output off just in case
 }
 

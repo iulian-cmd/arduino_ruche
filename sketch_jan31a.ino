@@ -8,7 +8,7 @@ int LDR = A0; // light dependent resistor
 int frequency[7] = {262, 294, 330, 349, 392, 440, 494};
 int indexNote = 0;
 int numberIO = 0;
-int t = 200;0
+int t = 200;
 int threshold = 200;
 bool day = true;
 

@@ -1,60 +1,56 @@
-const int BUTTON = 2;
+// declaration of all variables
+const int PHOTOINTERUPTER = 11; // photointerrupter pin on 11
+const int BUTTON = 6;
 const int LED = 4;
-int LEDflag = 0;                   // LED status flag
-int value = analogRead(A0); 
-int comptetours = 0;
-const int fourchePin = 5;         // optical fork pin 5
-int etatfourcheactuel = 0;
-int etatfourcheprecedent = 0;
+const int BUZZER = 7;
+int LDR = A0; // light dependent resistor
 
-// variables will change:
-int BUTTONstate = 0;             // variable for reading the pushbutton status
+int frequency[7] = {262, 294, 330, 349, 392, 440, 494};
+int indexNote = 0;
+int numberIO = 0;
+int t = 200;0
+int threshold = 200;
+bool day = true;
 
-void setup() {
+void setup()
+{
+  pinMode(PHOTOINTERUPTER, INPUT);
+  pinMode(LED, OUTPUT);
+  pinMode(BUZZER, OUTPUT);
+  pinMode(LDR, INPUT);
+  pinMode(BUTTON, INPUT_PULLUP);
   Serial.begin(9600);
-  pinMode(LED, OUTPUT);           // set the digital pin as output:
-  pinMode(BUTTON, INPUT);         // set the digital pin as input:
-  pinMode(fourchePin, INPUT);     // in input
-  digitalWrite(LED, LOW);         // turn output off just in case
 }
 
-void loop() {
-  if(digitalRead(BUTTON)==HIGH){  // if button is pressed
-    if (LEDflag==0) {             // and the status flag is LOW
-      LEDflag=1;                  // make status flag HIGH
-      digitalWrite(LED,HIGH);     // and turn on the LED
-      Serial.println("The LED is turned ON");
-      }                           
-    else {                        // otherwise...
-      LEDflag=0;                  // make status flag LOW
-      digitalWrite(LED,LOW);      // and turn off the LED
-      Serial.println("The LED is turned OFF");
-    }
-  delay(1000);                    // wait a sec for the 
-  }                               // hardware to stabilize
-  Serial.println("Analog Value :");
-  Serial.println(value);          // we write the value on the serial monitor
-  delay(250);
-
-  etatfourcheactuel = digitalRead(fourchePin);
-
-    if (etatfourcheactuel =! etatfourcheprecedent)
-    {
-      if (etatfourcheactuel == HIGH)
-      {
-    comptetours++;
-        Serial.println("Objet detecte"); 
-          Serial.print("nombre tours:  ");
-          Serial.println(comptetours, DEC); // affiche la valeur au format décimal
-        } 
-          else {
-          // si le bouton courant est BAS
-          // il est passé de HAUT à BAS :
-          Serial.println("pas d'objet detecté");
-        }
-
-        //mémorise l'état 
-        //pour les prochains passages dans la boucle loop
-        etatfourcheprecedent = etatfourcheactuel;
-      }
-}            
+void loop()
+{
+  Serial.println(digitalRead(PHOTOINTERUPTER));
+  if (digitalRead(PHOTOINTERUPTER) == LOW && day)
+  {
+    while(digitalRead(PHOTOINTERUPTER) == LOW);
+    digitalWrite(LED, HIGH);
+    delay(t);
+    digitalWrite(LED, LOW);
+    tone(BUZZER, frequency[indexNote], t);
+    // numberIO++;
+    Serial.print("\nBees: ");
+    Serial.print(numberIO++);
+  }
+  Serial.println(digitalRead(BUTTON));
+  if (digitalRead(BUTTON) == LOW)
+  {
+    while(digitalRead(BUTTON) == LOW);
+    delay(200);
+    indexNote = (indexNote + 1) % 7;
+    Serial.print("\nFrequency: ");
+    Serial.print(indexNote);
+  }
+  if (analogRead(LDR) < threshold)
+  {
+    day = false;
+  }
+  else
+  {
+    day = true;
+  }
+}
